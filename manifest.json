@@ -1,15 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "治愈太阳 - Healing Sun",
-  "version": "1.1.0",
-  "description": "下雨天为你带来一缕治愈的阳光 ☀️",
-  "permissions": ["storage", "activeTab", "scripting"],
-  "host_permissions": [
-    "https://ipinfo.io/*",
-    "https://ipapi.co/*",
-    "https://api.open-meteo.com/*",
-    "https://geocoding-api.open-meteo.com/*"
-  ],
+  "name": "治愈太阳",
+  "version": "3.0.0",
+  "description": "一个治愈的太阳 ☀️",
+  "permissions": ["activeTab", "scripting"],
   "background": {
     "service_worker": "background.js"
   },

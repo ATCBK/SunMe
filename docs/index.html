@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OWASP Bug Bounty Program</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="#" class="logo">
+                <div class="logo-icon"><i class="fas fa-shield-halved"></i></div>
+                <div>
+                    <div class="logo-text">OWASP</div>
+                    <div class="logo-subtext">Bug Bounty Program</div>
+                </div>
+            </a>
+            <nav class="nav-links">
+                <a href="#rules">Rules</a>
+                <a href="#rewards">Rewards</a>
+                <a href="#disclosure">Disclosure</a>
+                <a href="#faq">FAQ</a>
+                <a href="https://github.com/owasp" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                <a href="#submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Submit Report</a>
+            </nav>
+            <button class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="#rules">Rules</a>
+            <a href="#rewards">Rewards</a>
+            <a href="#disclosure">Disclosure</a>
+            <a href="#faq">FAQ</a>
+            <a href="https://github.com/owasp" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+            <a href="#submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Submit Report</a>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-bg">
+            <div class="hero-orb orb-1"></div>
+            <div class="hero-orb orb-2"></div>
+            <div class="hero-orb orb-3"></div>
+        </div>
+        <div class="container">
+            <div class="hero-badge">
+                <i class="fas fa-bug"></i>
+                <span>OWASP Bug Bounty Program</span>
+            </div>
+            <h1>Help Secure the <span class="gradient-text">OWASP Ecosystem</span></h1>
+            <p class="hero-subtitle">We welcome security researchers to responsibly disclose vulnerabilities in OWASP Foundation websites, flagship projects, and infrastructure. Your contributions help protect millions of developers worldwide.</p>
+            <div class="hero-stats">
+                <div class="stat-card">
+                    <span class="stat-number">$34,000+</span>
+                    <span class="stat-label">Total Rewards Paid</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">$5,000</span>
+                    <span class="stat-label">Maximum Payout</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">50+</span>
+                    <span class="stat-label">Reports Resolved</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">30 Days</span>
+                    <span class="stat-label">Average Resolution</span>
+                </div>
+            </div>
+            <div class="hero-cta">
+                <a href="#submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Submit a Vulnerability</a>
+                <a href="#rules" class="btn btn-secondary"><i class="fas fa-book"></i> Read the Rules</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scope -->
+    <section id="scope" class="section">
+        <div class="container">
+            <h2 class="section-title">Scope of Program</h2>
+            <p class="section-desc">The following OWASP assets are in scope for the bug bounty program.</p>
+            <div class="scope-grid">
+                <div class="scope-card in-scope">
+                    <div class="scope-icon"><i class="fas fa-check-circle"></i></div>
+                    <h3>In Scope</h3>
+                    <ul>
+                        <li><strong>Foundation Websites:</strong> owasp.org and all subdomains</li>
+                        <li><strong>Flagship Projects:</strong> OWASP Top 10, ZAP, Cheat Sheet Series, Dependency-Check, Amass, Core Rule Set</li>
+                        <li><strong>Project Websites:</strong> *.owasp.org project subdomains</li>
+                        <li><strong>Infrastructure:</strong> Docker Hub, GitHub organizations, CI/CD pipelines</li>
+                        <li><strong>Wiki &amp; Documentation:</strong> wiki.owasp.org, GitHub wikis</li>
+                    </ul>
+                </div>
+                <div class="scope-card out-scope">
+                    <div class="scope-icon"><i class="fas fa-times-circle"></i></div>
+                    <h3>Out of Scope</h3>
+                    <ul>
+                        <li>Third-party services (Meetup, Zoom, Google Workspace)</li>
+                        <li>Social media accounts (Twitter, LinkedIn, YouTube)</li>
+                        <li>Local chapter websites hosted externally</li>
+                        <li>Denial of service or brute force attacks</li>
+                        <li>Social engineering of OWASP staff or volunteers</li>
+                        <li>Physical security testing</li>
+                        <li>Clickjacking on pages with no sensitive actions</li>
+                        <li>Missing HTTP security headers with no demonstrated exploitability</li>
+                    </ul>
+                </div>
+                <div class="scope-card">
+                    <div class="scope-icon"><i class="fas fa-star"></i></div>
+                    <h3>Special Focus</h3>
+                    <ul>
+                        <li>Authentication and session management flaws</li>
+                        <li>Privilege escalation between regular and admin users</li>
+                        <li>Stored XSS in wiki or project pages</li>
+                        <li>SQL injection or NoSQL injection</li>
+                        <li>Server-side request forgery (SSRF)</li>
+                        <li>Insecure deserialization</li>
+                        <li>Sensitive data exposure</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Target Projects -->
+    <section class="section section-dark">
+        <div class="container">
+            <h2 class="section-title">Target OWASP Projects</h2>
+            <p class="section-desc">These flagship projects are primary targets for security research.</p>
+            <div class="project-grid">
+                <div class="project-card">
+                    <div class="project-icon"><i class="fas fa-shield-halved"></i></div>
+                    <h4>OWASP Top 10</h4>
+                    <p>Standard awareness document for web application security risks.</p>
+                    <span class="project-badge">Flagship</span>
+                </div>
+                <div class="project-card">
+                    <div class="project-icon"><i class="fas fa-spider"></i></div>
+                    <h4>OWASP ZAP</h4>
+                    <p>World's most widely used web app scanner.</p>
+                    <span class="project-badge">Flagship</span>
+                </div>
+                <div class="project-card">
+                    <div class="project-icon"><i class="fas fa-clipboard-check"></i></div>
+                    <h4>Cheat Sheet Series</h4>
+                    <p>concise collection of high value information on specific application security topics.</p>
+                    <span class="project-badge">Flagship</span>
+                </div>
+                <div class="project-card">
+                    <div class="project-icon"><i class="fas fa-magnifying-glass-chart"></i></div>
+                    <h4>Dependency-Check</h4>
+                    <p>Software composition analysis tool that detects publicly disclosed vulnerabilities.</p>
+                    <span class="project-badge">Flagship</span>
+                </div>
+                <div class="project-card">
+                    <div class="project-icon"><i class="fas fa-network-wired"></i></div>
+                    <h4>OWASP Amass</h4>
+                    <p>In-depth attack surface mapping and asset discovery.</p>
+                    <span class="project-badge">Flagship</span>
+                </div>
+                <div class="project-card">
+                    <div class="project-icon"><i class="fas fa-firewall"></i></div>
+                    <h4>Core Rule Set</h4>
+                    <p>Set of generic attack detection rules for ModSecurity.</p>
+                    <span class="project-badge">Flagship</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rules -->
+    <section id="rules" class="section">
+        <div class="container">
+            <h2 class="section-title">Program Rules</h2>
+            <div class="rules-list">
+                <div class="rule-item">
+                    <div class="rule-icon"><i class="fas fa-user-check"></i></div>
+                    <div>
+                        <h4>Be a Good Citizen</h4>
+                        <p>Only test against your own accounts or accounts you have explicit permission to test. Do not access, modify, or delete data belonging to other users.</p>
+                    </div>
+                </div>
+                <div class="rule-item">
+                    <div class="rule-icon"><i class="fas fa-ban"></i></div>
+                    <div>
+                        <h4>No Disruption</h4>
+                        <p>Do not perform any testing that could degrade or disrupt OWASP services. Automated scanning with high request rates is not permitted.</p>
+                    </div>
+                </div>
+                <div class="rule-item">
+                    <div class="rule-icon"><i class="fas fa-lock"></i></div>
+                    <div>
+                        <h4>Confidentiality</h4>
+                        <p>Do not disclose the vulnerability publicly before it has been resolved. Allow reasonable time for remediation (typically 90 days).</p>
+                    </div>
+                </div>
+                <div class="rule-item">
+                    <div class="rule-icon"><i class="fas fa-file-lines"></i></div>
+                    <div>
+                        <h4>Quality Reports</h4>
+                        <p>Provide clear, detailed reproduction steps. Include screenshots, proof-of-concept code, and impact assessment.</p>
+                    </div>
+                </div>
+                <div class="rule-item">
+                    <div class="rule-icon"><i class="fas fa-scale-balanced"></i></div>
+                    <div>
+                        <h4>One Vulnerability at a Time</h4>
+                        <p>Report each vulnerability separately. Do not chain vulnerabilities unless the chain itself demonstrates a greater impact.</p>
+                    </div>
+                </div>
+                <div class="rule-item">
+                    <div class="rule-icon"><i class="fas fa-gavel"></i></div>
+                    <div>
+                        <h4>Legal Compliance</h4>
+                        <p>All testing must comply with applicable laws. OWASP will not pursue legal action against researchers who follow these rules.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rewards -->
+    <section id="rewards" class="section section-dark">
+        <div class="container">
+            <h2 class="section-title">Reward Tiers</h2>
+            <p class="section-desc">Rewards are based on severity using CVSS v3.1 scoring.</p>
+            <div class="reward-grid">
+                <div class="reward-card reward-critical">
+                    <div class="reward-header">
+                        <span class="reward-severity">Critical</span>
+                        <span class="reward-cvss">CVSS 9.0 - 10.0</span>
+                    </div>
+                    <div class="reward-amount">$2,000 - $5,000</div>
+                    <div class="reward-examples">
+                        <h5>Examples:</h5>
+                        <ul>
+                            <li>Remote code execution</li>
+                            <li>SQL injection with data exfiltration</li>
+                            <li>Authentication bypass</li>
+                            <li>Privilege escalation to admin</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="reward-card reward-high">
+                    <div class="reward-header">
+                        <span class="reward-severity">High</span>
+                        <span class="reward-cvss">CVSS 7.0 - 8.9</span>
+                    </div>
+                    <div class="reward-amount">$750 - $2,000</div>
+                    <div class="reward-examples">
+                        <h5>Examples:</h5>
+                        <ul>
+                            <li>Stored XSS affecting multiple users</li>
+                            <li>Server-side request forgery</li>
+                            <li>Insecure deserialization</li>
+                            <li>Significant sensitive data exposure</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="reward-card reward-medium">
+                    <div class="reward-header">
+                        <span class="reward-severity">Medium</span>
+                        <span class="reward-cvss">CVSS 4.0 - 6.9</span>
+                    </div>
+                    <div class="reward-amount">$250 - $750</div>
+                    <div class="reward-examples">
+                        <h5>Examples:</h5>
+                        <ul>
+                            <li>Cross-site request forgery</li>
+                            <li>Reflected XSS</li>
+                            <li>Open redirect with exploit</li>
+                            <li>Insecure direct object reference</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="reward-card reward-low">
+                    <div class="reward-header">
+                        <span class="reward-severity">Low</span>
+                        <span class="reward-cvss">CVSS 0.1 - 3.9</span>
+                    </div>
+                    <div class="reward-amount">$50 - $250</div>
+                    <div class="reward-examples">
+                        <h5>Examples:</h5>
+                        <ul>
+                            <li>Missing security headers</li>
+                            <li>Information disclosure</li>
+                            <li>Self-XSS</li>
+                            <li>Minor configuration issues</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Disclosure -->
+    <section id="disclosure" class="section">
+        <div class="container">
+            <h2 class="section-title">Responsible Disclosure Process</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h4>Step 1: Report</h4>
+                        <p>Submit your vulnerability report through our secure submission form or email. Include all relevant details, proof of concept, and your assessment of the impact.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h4>Step 2: Acknowledgment</h4>
+                        <p>Our security team will acknowledge receipt of your report within 3 business days and provide an initial assessment.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h4>Step 3: Validation</h4>
+                        <p>Our team will validate and reproduce the reported vulnerability, and determine the severity and impact. This typically takes 5-10 business days.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h4>Step 4: Remediation</h4>
+                        <p>Once confirmed, we will work to fix the vulnerability. We aim to resolve critical issues within 30 days and high issues within 60 days.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h4>Step 5: Resolution &amp; Reward</h4>
+                        <p>After the fix is deployed, we will notify you, issue the bounty payment, and coordinate on public disclosure timing if applicable.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Submit Report -->
+    <section id="submit" class="section section-dark">
+        <div class="container">
+            <h2 class="section-title">Submit a Vulnerability Report</h2>
+            <p class="section-desc">All fields marked with <span style="color: #ef4444;">*</span> are required.</p>
+            <form id="reportForm" class="report-form" action="https://formspree.io/f/mvgqkowp" method="POST">
+                <div class="form-group">
+                    <label for="reporterName">Full Name <span class="required">*</span></label>
+                    <input type="text" id="reporterName" name="name" required placeholder="Your name or pseudonym">
+                </div>
+                <div class="form-group">
+                    <label for="reporterEmail">Email Address <span class="required">*</span></label>
+                    <input type="email" id="reporterEmail" name="email" required placeholder="your@email.com">
+                    <span class="form-hint">We will use this to communicate about your report.</span>
+                </div>
+                <div class="form-group">
+                    <label for="severity">Severity Level <span class="required">*</span></label>
+                    <select id="severity" name="severity" required>
+                        <option value="">Select severity...</option>
+                        <option value="Critical">Critical (CVSS 9.0-10.0)</option>
+                        <option value="High">High (CVSS 7.0-8.9)</option>
+                        <option value="Medium">Medium (CVSS 4.0-6.9)</option>
+                        <option value="Low">Low (CVSS 0.1-3.9)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="vulnTitle">Vulnerability Title <span class="required">*</span></label>
+                    <input type="text" id="vulnTitle" name="title" required placeholder="Brief description of the vulnerability">
+                </div>
+                <div class="form-group">
+                    <label for="targetAsset">Target Asset <span class="required">*</span></label>
+                    <input type="text" id="targetAsset" name="target" required placeholder="e.g., owasp.org, wiki.owasp.org, OWASP ZAP">
+                </div>
+                <div class="form-group">
+                    <label for="vulnType">Vulnerability Type <span class="required">*</span></label>
+                    <select id="vulnType" name="vuln_type" required>
+                        <option value="">Select type...</option>
+                        <option value="SQL Injection">SQL Injection</option>
+                        <option value="Cross-Site Scripting (XSS)">Cross-Site Scripting (XSS)</option>
+                        <option value="Cross-Site Request Forgery (CSRF)">Cross-Site Request Forgery (CSRF)</option>
+                        <option value="Authentication Bypass">Authentication Bypass</option>
+                        <option value="Privilege Escalation">Privilege Escalation</option>
+                        <option value="Server-Side Request Forgery (SSRF)">Server-Side Request Forgery (SSRF)</option>
+                        <option value="Insecure Deserialization">Insecure Deserialization</option>
+                        <option value="Remote Code Execution (RCE)">Remote Code Execution (RCE)</option>
+                        <option value="Sensitive Data Exposure">Sensitive Data Exposure</option>
+                        <option value="Open Redirect">Open Redirect</option>
+                        <option value="File Inclusion / Path Traversal">File Inclusion / Path Traversal</option>
+                        <option value="XML External Entity (XXE)">XML External Entity (XXE)</option>
+                        <option value="Broken Access Control">Broken Access Control</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="vulnDescription">Detailed Description <span class="required">*</span></label>
+                    <textarea id="vulnDescription" name="description" required placeholder="Describe the vulnerability in detail, including:&#10;1. Steps to reproduce&#10;2. Affected URLs/endpoints&#10;3. Parameters involved&#10;4. Payloads used"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="vulnImpact">Impact Assessment <span class="required">*</span></label>
+                    <textarea id="vulnImpact" name="impact" required placeholder="Describe the potential impact:&#10;- What data could be accessed or modified?&#10;- How many users could be affected?&#10;- What is the worst-case scenario?"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="vulnPoc">Proof of Concept</label>
+                    <textarea id="vulnPoc" name="poc" placeholder="Provide reproduction steps, code snippets, or payloads.&#10;Example:&#10;1. Navigate to https://owasp.org/...&#10;2. Enter the following payload in the search field: ...&#10;3. Observe that ..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="vulnScreenshots">Screenshots / Evidence</label>
+                    <textarea id="vulnScreenshots" name="evidence" placeholder="Describe or paste links to any screenshots, videos, or other evidence."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="vulnSuggestion">Suggested Fix</label>
+                    <textarea id="vulnSuggestion" name="fix" placeholder="If you have suggestions on how to fix the vulnerability, please describe them here."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="cvssScore">CVSS v3.1 Score (Self-Assessed)</label>
+                    <input type="text" id="cvssScore" name="cvss_score" placeholder="e.g., 7.5 or AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N">
+                    <span class="form-hint">Use the <a href="https://www.first.org/cvss/calculator/3.1" target="_blank">CVSS v3.1 Calculator</a> if needed.</span>
+                </div>
+                <div class="form-group checkbox-group">
+                    <label>
+                        <input type="checkbox" id="agreement" name="agreement" required>
+                        I agree to the <a href="#rules">program rules</a> and will not publicly disclose this vulnerability before it is resolved. <span class="required">*</span>
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                    <i class="fas fa-paper-plane"></i> Submit Report
+                </button>
+                <div class="form-note">
+                    <i class="fas fa-lock"></i> Your report will be handled confidentially by the OWASP security team.
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Disclosure Policy -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Public Disclosure Policy</h2>
+            <div class="policy-grid">
+                <div class="policy-card">
+                    <div class="policy-icon"><i class="fas fa-clock"></i></div>
+                    <h4>90-Day Disclosure</h4>
+                    <p>OWASP follows a 90-day responsible disclosure policy. After a fix is deployed, public disclosure can occur after 90 days from the initial report.</p>
+                </div>
+                <div class="policy-card">
+                    <div class="policy-icon"><i class="fas fa-handshake"></i></div>
+                    <h4>Coordinated Disclosure</h4>
+                    <p>We prefer coordinated disclosure. We will work with you to agree on an appropriate timeline for public disclosure.</p>
+                </div>
+                <div class="policy-card">
+                    <div class="policy-icon"><i class="fas fa-trophy"></i></div>
+                    <h4>Researcher Credit</h4>
+                    <p>With your permission, we will acknowledge your contribution on our security acknowledgments page and in any public disclosure.</p>
+                </div>
+                <div class="policy-card">
+                    <div class="policy-icon"><i class="fas fa-shield-halved"></i></div>
+                    <h4>Safe Harbor</h4>
+                    <p>OWASP will not pursue legal action against researchers who follow these guidelines in good faith.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="section section-dark">
+        <div class="container">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Who can participate in the bug bounty program?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Anyone can participate, including security researchers, developers, students, and enthusiasts. OWASP volunteers and board members are not eligible for monetary rewards but are encouraged to report vulnerabilities.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How are rewards paid?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Rewards are paid via PayPal, wire transfer, or cryptocurrency (Bitcoin or Ethereum) within 30 days of the fix being deployed. For amounts over $1,000, we may require additional verification.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Can I submit multiple reports?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, we encourage multiple submissions. Each unique vulnerability will be evaluated and rewarded separately. Duplicate reports for the same vulnerability will be rewarded to the first reporter only.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What if I found a vulnerability in a third-party OWASP project?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>OWASP projects are maintained by individual project leaders. For flagship projects, we coordinate with the project team. For other projects, we will forward your report to the relevant project leader and facilitate communication.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What if my vulnerability is marked as duplicate or out of scope?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>If your report is a duplicate, we will let you know. If it is out of scope but still valid, we may still acknowledge your contribution even without a monetary reward. We value all good-faith security research.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Do I need to create an account to submit a report?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>No, you can submit a report through our web form or by emailing security@owasp.org. However, you will need to provide a valid email address for communication.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Can I use automated scanning tools?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Automated scanning is permitted at low intensity rates only. High-volume automated scanning that could degrade service performance is not allowed. Manual testing and targeted exploitation are preferred.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What OWASP projects are in scope?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>All OWASP Foundation websites (*.owasp.org), flagship projects (OWASP Top 10, ZAP, Cheat Sheet Series, Dependency-Check, Amass, Core Rule Set), and OWASP infrastructure (GitHub repos, CI/CD, Docker Hub) are in scope.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How long does it take to get a response?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We aim to acknowledge reports within 3 business days, validate within 10 business days, and resolve critical vulnerabilities within 30 days. You will be kept informed of progress throughout the process.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Is there a Hall of Fame or recognition page?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! With your permission, we maintain a Security Researchers Hall of Fame to publicly acknowledge contributors. You can choose to remain anonymous if you prefer.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <div class="logo-icon"><i class="fas fa-shield-halved"></i></div>
+                        <div>
+                            <div class="logo-text">OWASP</div>
+                            <div class="logo-subtext">Bug Bounty Program</div>
+                        </div>
+                    </div>
+                    <p>The Open Worldwide Application Security Project (OWASP) is a nonprofit foundation that works to improve the security of software.</p>
+                </div>
+                <div>
+                    <h4>Program</h4>
+                    <ul>
+                        <li><a href="#scope">Scope</a></li>
+                        <li><a href="#rules">Rules</a></li>
+                        <li><a href="#rewards">Rewards</a></li>
+                        <li><a href="#disclosure">Disclosure</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="https://owasp.org" target="_blank">OWASP.org</a></li>
+                        <li><a href="https://owasp.org/www-project-top-ten/" target="_blank">OWASP Top 10</a></li>
+                        <li><a href="https://www.first.org/cvss/calculator/3.1" target="_blank">CVSS Calculator</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><a href="mailto:security@owasp.org"><i class="fas fa-envelope"></i> security@owasp.org</a></li>
+                        <li><a href="https://github.com/owasp" target="_blank"><i class="fab fa-github"></i> GitHub</a></li>
+                        <li><a href="https://twitter.com/owasp" target="_blank"><i class="fab fa-twitter"></i> Twitter</a></li>
+                        <li><a href="https://owasp.org/slack/invite" target="_blank"><i class="fab fa-slack"></i> Slack</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 OWASP Foundation. All rights reserved. | <a href="https://owasp.org/www-policy/operational/privacy">Privacy Policy</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile Menu Toggle Script -->
+    <script>
+        document.getElementById('mobileToggle').addEventListener('click', function() {
+            document.getElementById('mobileMenu').classList.toggle('active');
+            this.querySelector('i').classList.toggle('fa-bars');
+            this.querySelector('i').classList.toggle('fa-times');
+        });
+
+        // FAQ Accordion
+        document.querySelectorAll('.faq-question').forEach(q => {
+            q.addEventListener('click', function() {
+                this.parentElement.classList.toggle('active');
+            });
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    document.getElementById('mobileMenu').classList.remove('active');
+                }
+            });
+        });
+
+        // Form submission handler
+        document.getElementById('reportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+            btn.disabled = true;
+
+            const formData = new FormData(this);
+
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    btn.innerHTML = '<i class="fas fa-check"></i> Report Submitted!';
+                    btn.style.background = '#10b981';
+                    alert('Thank you for your report! We will review it and get back to you within 3 business days.');
+                    this.reset();
+                } else {
+                    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Report';
+                    btn.disabled = false;
+                    alert('There was an error submitting your report. Please email security@owasp.org directly.');
+                }
+            }).catch(error => {
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Report';
+                btn.disabled = false;
+                alert('There was an error submitting your report. Please email security@owasp.org directly.');
+            });
+        });
+    </script>
+</body>
+</html>

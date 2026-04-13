@@ -1,278 +1,58 @@
-/* ===== 治愈太阳浮窗 ===== */
+/* ===== 纯太阳 ===== */
 #healing-sun-widget {
   position: fixed;
-  top: 80px;
-  right: 40px;
+  top: 120px;
+  right: 80px;
   z-index: 2147483647;
-  width: 220px;
-  background: rgba(255, 248, 237, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
-    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-  color: #5D4E37;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden;
-  user-select: none;
-  transition: box-shadow 0.3s, transform 0.2s;
-}
-
-#healing-sun-widget:hover {
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18), 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-#healing-sun-widget.dragging {
-  opacity: 0.92;
-  cursor: grabbing;
-}
-
-/* ===== 顶部拖拽条 ===== */
-.hs-drag-bar {
-  width: 100%;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 130px;
+  height: 130px;
   cursor: grab;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+}
+
+#healing-sun-widget.hiding {
+  opacity: 0;
+  transform: scale(0.3);
+}
+
+.hs-wrap {
   position: relative;
-  flex-shrink: 0;
+  width: 130px;
+  height: 130px;
+  animation: hs-float 5s ease-in-out infinite;
 }
 
-.hs-drag-bar:active {
-  cursor: grabbing;
+@keyframes hs-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
 }
 
-.hs-drag-dots {
-  width: 36px;
-  height: 4px;
-  border-radius: 2px;
-  background: #D0C4B0;
-}
-
-.hs-close-btn {
+/* ===== 波浪边框 SVG ===== */
+.hs-wave-ring {
   position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.08);
-  border: none;
-  font-size: 11px;
-  line-height: 18px;
-  text-align: center;
-  color: #999;
-  cursor: pointer;
-  padding: 0;
-  transition: background 0.2s, color 0.2s;
+  top: -15px;
+  left: -15px;
+  width: 160px;
+  height: 160px;
+  animation: hs-rotate 30s linear infinite;
+  z-index: 0;
+  opacity: 0.7;
 }
 
-.hs-close-btn:hover {
-  background: rgba(0, 0, 0, 0.15);
-  color: #666;
-}
-
-/* ===== 内容区 ===== */
-.hs-content {
-  width: 100%;
-  padding: 0 16px 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* ===== 加载 ===== */
-.hs-loading {
-  padding: 40px 0;
-  text-align: center;
-  color: #9B8A72;
-  font-size: 13px;
-}
-
-.hs-spinner {
-  width: 28px;
-  height: 28px;
-  border: 3px solid #F0DCC0;
-  border-top-color: #E8873A;
-  border-radius: 50%;
-  animation: hs-spin 0.8s linear infinite;
-  margin: 0 auto 12px;
-}
-
-@keyframes hs-spin {
+@keyframes hs-rotate {
   to { transform: rotate(360deg); }
 }
 
-/* ===== 手动输入 ===== */
-.hs-manual {
-  padding: 20px 0;
-  text-align: center;
-  width: 100%;
-}
-
-.hs-manual-icon {
-  font-size: 28px;
-  margin-bottom: 8px;
-}
-
-.hs-manual p {
-  font-size: 12px;
-  color: #9B8A72;
-  margin-bottom: 10px;
-}
-
-.hs-manual-form {
-  display: flex;
-  gap: 6px;
-  justify-content: center;
-}
-
-.hs-manual-form input {
-  flex: 1;
-  max-width: 130px;
-  padding: 7px 10px;
-  border: 2px solid #F0DCC0;
-  border-radius: 10px;
-  font-size: 13px;
-  outline: none;
-  background: rgba(255, 255, 255, 0.7);
-}
-
-.hs-manual-form input:focus {
-  border-color: #E8873A;
-}
-
-.hs-manual-form button {
-  padding: 7px 14px;
-  border: none;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #FFD93D, #FF8C42);
-  color: #fff;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.hs-error-msg {
-  margin-top: 8px;
-  font-size: 12px;
-  color: #D9534F;
-}
-
-/* ===== 正常天气 ===== */
-.hs-normal {
-  text-align: center;
-  width: 100%;
-  animation: hs-fadeIn 0.4s ease-out;
-}
-
-@keyframes hs-fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.hs-city-name {
-  font-size: 14px;
-  font-weight: 600;
-  color: #5D4E37;
-  margin-bottom: 10px;
-}
-
-.hs-weather-main {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  margin-bottom: 4px;
-}
-
-.hs-weather-icon-emoji {
-  font-size: 44px;
-}
-
-.hs-temperature {
-  font-size: 38px;
-  font-weight: 300;
-  color: #5D4E37;
-  line-height: 1;
-}
-
-.hs-weather-desc {
-  font-size: 13px;
-  color: #9B8A72;
-  margin-bottom: 12px;
-}
-
-.hs-weather-details {
-  display: flex;
-  justify-content: center;
-  gap: 24px;
-  margin-bottom: 8px;
-}
-
-.hs-detail-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.hs-detail-label {
-  font-size: 11px;
-  color: #B0A08A;
-  margin-bottom: 2px;
-}
-
-.hs-detail-value {
-  font-size: 15px;
-  font-weight: 600;
-  color: #5D4E37;
-}
-
-.hs-update-time {
-  font-size: 10px;
-  color: #C0B09A;
-}
-
-/* ===== 雨天治愈视图 ===== */
-.hs-rain {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding-top: 6px;
-  animation: hs-fadeIn 0.5s ease-out;
-}
-
-.hs-rain-message {
-  font-size: 13px;
-  color: #8A9BAA;
-  margin-bottom: 10px;
-  animation: hs-fadeIn 0.5s ease-out 0.2s both;
-}
-
-/* ===== 治愈太阳 ===== */
-#hs-sun-container {
-  position: relative;
-  width: 150px;
-  height: 150px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: hs-sunFloat 5s ease-in-out infinite;
-}
-
-@keyframes hs-sunFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
-
-/* 太阳本体 */
-.hs-sun-body {
+/* ===== 太阳本体 ===== */
+.hs-body {
+  position: absolute;
+  top: 15px;
+  left: 15px;
   width: 100px;
   height: 100px;
   border-radius: 50%;
@@ -283,156 +63,165 @@
     #FF8C42 100%
   );
   box-shadow:
-    0 0 25px rgba(255, 200, 100, 0.5),
-    0 0 50px rgba(255, 180, 80, 0.3),
-    inset 0 0 18px rgba(255, 255, 200, 0.3);
+    0 0 30px rgba(255, 200, 100, 0.6),
+    0 0 60px rgba(255, 180, 80, 0.3),
+    inset 0 0 15px rgba(255, 255, 200, 0.3);
+  animation: hs-glow 3s ease-in-out infinite alternate;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+  gap: 6px;
   z-index: 2;
-  position: relative;
-  animation: hs-sunGlow 3s ease-in-out infinite alternate;
 }
 
-@keyframes hs-sunGlow {
+@keyframes hs-glow {
   0% {
     box-shadow:
-      0 0 25px rgba(255, 200, 100, 0.5),
-      0 0 50px rgba(255, 180, 80, 0.3),
-      inset 0 0 18px rgba(255, 255, 200, 0.3);
+      0 0 30px rgba(255, 200, 100, 0.6),
+      0 0 60px rgba(255, 180, 80, 0.3),
+      inset 0 0 15px rgba(255, 255, 200, 0.3);
   }
   100% {
     box-shadow:
-      0 0 35px rgba(255, 200, 100, 0.7),
-      0 0 65px rgba(255, 180, 80, 0.5),
+      0 0 45px rgba(255, 200, 100, 0.9),
+      0 0 90px rgba(255, 180, 80, 0.5),
       inset 0 0 22px rgba(255, 255, 200, 0.4);
   }
 }
 
-/* 太阳面部 - 横向排列 */
-.hs-sun-face {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: row;
-  gap: 14px;
-  animation: hs-faceFadeIn 1s ease-out 0.5s both;
-}
-
-@keyframes hs-faceFadeIn {
-  from { opacity: 0; transform: scale(0.8); }
-  to { opacity: 1; transform: scale(1); }
-}
-
+/* ===== 眼睛 + 微笑 ===== */
 .hs-eyes {
   display: flex;
-  gap: 14px;
+  gap: 16px;
 }
 
 .hs-eye {
-  width: 8px;
-  height: 10px;
+  width: 7px;
+  height: 9px;
   border-radius: 50%;
   background: #5D4E37;
 }
 
 .hs-smile {
-  position: absolute;
-  bottom: 30px;
-  width: 22px;
-  height: 11px;
+  width: 20px;
+  height: 10px;
   border-bottom: 3px solid #5D4E37;
   border-radius: 0 0 50% 50%;
 }
 
-/* 太阳光芒 */
-.hs-sun-rays {
+/* ===== 光芒 ===== */
+.hs-rays {
   position: absolute;
-  width: 150px;
-  height: 150px;
-  animation: hs-raysRotate 20s linear infinite;
+  top: 15px;
+  left: 15px;
+  width: 100px;
+  height: 100px;
+  animation: hs-rotate 25s linear infinite;
   z-index: 1;
-}
-
-@keyframes hs-raysRotate {
-  to { transform: rotate(360deg); }
 }
 
 .hs-ray {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 12px;
-  height: 48px;
-  margin-left: -6px;
-  margin-top: -74px;
+  width: 8px;
+  height: 30px;
+  margin-left: -4px;
+  margin-top: -48px;
   background: linear-gradient(to top,
     rgba(255, 217, 61, 0.5),
-    rgba(255, 180, 80, 0.05)
+    rgba(255, 180, 80, 0)
   );
-  border-radius: 6px;
-  transform-origin: center 74px;
-  animation: hs-raysPulse 4s ease-in-out infinite;
+  border-radius: 4px;
+  transform-origin: center 48px;
+  animation: hs-pulse 4s ease-in-out infinite;
 }
 
 .hs-ray:nth-child(1) { transform: rotate(0deg); animation-delay: 0s; }
-.hs-ray:nth-child(2) { transform: rotate(45deg); animation-delay: 0.5s; }
-.hs-ray:nth-child(3) { transform: rotate(90deg); animation-delay: 1s; }
-.hs-ray:nth-child(4) { transform: rotate(135deg); animation-delay: 1.5s; }
-.hs-ray:nth-child(5) { transform: rotate(180deg); animation-delay: 2s; }
-.hs-ray:nth-child(6) { transform: rotate(225deg); animation-delay: 2.5s; }
-.hs-ray:nth-child(7) { transform: rotate(270deg); animation-delay: 3s; }
-.hs-ray:nth-child(8) { transform: rotate(315deg); animation-delay: 3.5s; }
+.hs-ray:nth-child(2) { transform: rotate(30deg); animation-delay: 0.3s; }
+.hs-ray:nth-child(3) { transform: rotate(60deg); animation-delay: 0.6s; }
+.hs-ray:nth-child(4) { transform: rotate(90deg); animation-delay: 0.9s; }
+.hs-ray:nth-child(5) { transform: rotate(120deg); animation-delay: 1.2s; }
+.hs-ray:nth-child(6) { transform: rotate(150deg); animation-delay: 1.5s; }
+.hs-ray:nth-child(7) { transform: rotate(180deg); animation-delay: 1.8s; }
+.hs-ray:nth-child(8) { transform: rotate(210deg); animation-delay: 2.1s; }
+.hs-ray:nth-child(9) { transform: rotate(240deg); animation-delay: 2.4s; }
+.hs-ray:nth-child(10) { transform: rotate(270deg); animation-delay: 2.7s; }
+.hs-ray:nth-child(11) { transform: rotate(300deg); animation-delay: 3.0s; }
+.hs-ray:nth-child(12) { transform: rotate(330deg); animation-delay: 3.3s; }
 
-@keyframes hs-raysPulse {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.9; }
+@keyframes hs-pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
 }
 
-/* 治愈文案 */
-.hs-healing-message {
-  font-size: 13px;
-  color: #E8873A;
-  font-weight: 500;
-  margin-top: 12px;
-  animation: hs-fadeIn 0.5s ease-out 0.8s both;
-}
-
-.hs-rain-info {
-  margin-top: 8px;
-  font-size: 12px;
-  color: #B0A08A;
-  animation: hs-fadeIn 0.5s ease-out 1s both;
-}
-
-.hs-rain-divider {
-  margin: 0 4px;
-}
-
-/* ===== 底部操作 ===== */
-.hs-actions {
-  width: 100%;
-  padding: 8px 16px 12px;
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-}
-
-.hs-action-btn {
-  width: 28px;
-  height: 28px;
+/* ===== 地区设置小按钮 ===== */
+.hs-loc-btn {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   border: none;
-  background: rgba(0, 0, 0, 0.05);
-  font-size: 14px;
+  background: rgba(255, 200, 100, 0.3);
+  font-size: 13px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.3s;
   padding: 0;
 }
 
-.hs-action-btn:hover {
-  background: rgba(0, 0, 0, 0.1);
+#healing-sun-widget:hover .hs-loc-btn {
+  opacity: 1;
+}
+
+.hs-loc-btn:hover {
+  background: rgba(255, 200, 100, 0.6);
+}
+
+/* ===== 地区输入小弹窗 ===== */
+.hs-loc-popup {
+  position: absolute;
+  bottom: 30px;
+  right: 0;
+  width: 160px;
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(255, 248, 237, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  z-index: 20;
+  display: none;
+}
+
+.hs-loc-popup.show {
+  display: block;
+}
+
+.hs-loc-popup input {
+  width: 100%;
+  padding: 6px 8px;
+  border: 2px solid #F0DCC0;
+  border-radius: 8px;
+  font-size: 13px;
+  outline: none;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.hs-loc-popup input:focus {
+  border-color: #E8873A;
+}
+
+.hs-loc-hint {
+  font-size: 10px;
+  color: #B0A08A;
+  margin-top: 6px;
+  text-align: center;
 }

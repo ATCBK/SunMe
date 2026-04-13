@@ -1,309 +1,118 @@
 (function () {
-  if (document.getElementById('healing-sun-widget')) return;
-
-  // ===== 常量 =====
-  const RAIN_CODES = new Set([
-    51, 53, 55, 56, 57, 61, 63, 65, 66, 67,
-    71, 73, 75, 77, 80, 81, 82, 85, 86, 95, 96, 99,
-  ]);
-
-  // ===== 工具函数 =====
-  function isRaining(code) { return RAIN_CODES.has(code); }
-
-  function codeToEmoji(code) {
-    if (code === 0) return '☀️';
-    if (code === 1) return '🌤️';
-    if (code === 2) return '⛅';
-    if (code === 3) return '☁️';
-    if ([45, 48].includes(code)) return '🌫️';
-    if ([51, 53, 55, 56, 57, 61, 63, 65, 80, 81, 82].includes(code)) return '🌧️';
-    if ([66, 67].includes(code)) return '🧊';
-    if ([71, 73, 75, 77, 85, 86].includes(code)) return '🌨️';
-    if ([95, 96, 99].includes(code)) return '⛈️';
-    return '🌤️';
+  // 已存在则切换
+  const old = document.getElementById('healing-sun-widget');
+  if (old) {
+    if (old.style.display === 'none') {
+      old.classList.remove('hiding');
+      old.style.display = 'block';
+    } else {
+      old.classList.add('hiding');
+      setTimeout(function () { old.style.display = 'none'; }, 400);
+    }
+    return;
   }
 
-  function codeToText(code) {
-    const map = {
-      0: '晴', 1: '基本晴', 2: '多云', 3: '阴天',
-      45: '雾', 48: '雾凇',
-      51: '小毛毛雨', 53: '毛毛雨', 55: '大毛毛雨',
-      56: '冻毛毛雨', 57: '强冻毛毛雨',
-      61: '小雨', 63: '中雨', 65: '大雨',
-      66: '冻雨', 67: '强冻雨',
-      71: '小雪', 73: '中雪', 75: '大雪', 77: '雪粒',
-      80: '小阵雨', 81: '阵雨', 82: '大阵雨',
-      85: '小阵雪', 86: '大阵雪',
-      95: '雷暴', 96: '雷暴伴冰雹', 99: '强雷暴伴冰雹',
-    };
-    return map[code] || '未知';
-  }
+  // 波浪 SVG 路径
+  var waveSVG = '<svg class="hs-wave-ring" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+    '<path d="M80 8 C95 2, 110 8, 118 18 C126 28, 135 35, 140 50 C145 65, 152 75, 152 80 C152 95, 145 110, 135 118 C125 126, 118 135, 110 140 C100 146, 90 152, 80 152 C65 152, 50 145, 42 135 C34 125, 25 118, 18 110 C10 100, 8 90, 8 80 C8 65, 15 50, 25 42 C35 34, 42 25, 50 18 C60 10, 70 5, 80 8Z" ' +
+    'stroke="#FFD36E" stroke-width="2" fill="none" opacity="0.5"/>' +
+    '<path d="M80 18 C92 14, 105 18, 112 26 C120 35, 128 40, 132 52 C136 64, 142 72, 142 80 C142 92, 136 105, 128 112 C120 119, 112 128, 105 132 C96 137, 88 142, 80 142 C68 142, 55 136, 48 128 C40 120, 32 112, 26 105 C19 96, 18 88, 18 80 C18 68, 24 55, 32 48 C40 40, 48 32, 55 26 C63 19, 72 15, 80 18Z" ' +
+    'stroke="#FFB833" stroke-width="1.5" fill="none" opacity="0.35"/>' +
+    '</svg>';
 
-  // ===== API =====
-  async function getLocation() {
-    const services = [
-      { url: 'https://ipinfo.io/json', parse: d => d.city },
-      { url: 'https://ipapi.co/json/', parse: d => d.city },
-    ];
-    for (const svc of services) {
-      try {
-        const ctrl = new AbortController();
-        const t = setTimeout(() => ctrl.abort(), 5000);
-        const resp = await fetch(svc.url, { signal: ctrl.signal });
-        clearTimeout(t);
-        if (resp.ok) {
-          const data = await resp.json();
-          const city = svc.parse(data);
-          if (city) return city;
+  // 创建 DOM
+  var el = document.createElement('div');
+  el.id = 'healing-sun-widget';
+  el.innerHTML =
+    '<div class="hs-wrap">' +
+      waveSVG +
+      '<div class="hs-rays">' +
+        '<div class="hs-ray"></div><div class="hs-ray"></div>' +
+        '<div class="hs-ray"></div><div class="hs-ray"></div>' +
+        '<div class="hs-ray"></div><div class="hs-ray"></div>' +
+        '<div class="hs-ray"></div><div class="hs-ray"></div>' +
+        '<div class="hs-ray"></div><div class="hs-ray"></div>' +
+        '<div class="hs-ray"></div><div class="hs-ray"></div>' +
+      '</div>' +
+      '<div class="hs-body">' +
+        '<div class="hs-eyes">' +
+          '<div class="hs-eye"></div>' +
+          '<div class="hs-eye"></div>' +
+        '</div>' +
+        '<div class="hs-smile"></div>' +
+      '</div>' +
+      '<button class="hs-loc-btn" title="设置地区">📍</button>' +
+      '<div class="hs-loc-popup" id="hs-loc-popup">' +
+        '<input type="text" id="hs-loc-input" placeholder="输入城市名 如 北京">' +
+        '<div class="hs-loc-hint">留空则自动定位</div>' +
+      '</div>' +
+    '</div>';
+  document.body.appendChild(el);
+
+  var locBtn = el.querySelector('.hs-loc-btn');
+  var locPopup = document.getElementById('hs-loc-popup');
+  var locInput = document.getElementById('hs-loc-input');
+
+  // 点地区按钮 → 弹出输入框
+  locBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    locPopup.classList.toggle('show');
+    if (locPopup.classList.contains('show')) {
+      locInput.focus();
+    }
+  });
+
+  // 回车确认
+  locInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+      var city = locInput.value.trim();
+      locPopup.classList.remove('show');
+      if (city) {
+        // 保存城市到 chrome.storage，下次插件加载时读取
+        if (typeof chrome !== 'undefined' && chrome.storage) {
+          chrome.storage.local.set({ hs_city: city });
         }
-      } catch { continue; }
-    }
-    return null;
-  }
-
-  async function geocodeCity(city) {
-    const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=zh`;
-    const resp = await fetch(url);
-    if (!resp.ok) throw new Error('城市查询失败');
-    const data = await resp.json();
-    if (!data.results || data.results.length === 0) throw new Error('未找到该城市');
-    const loc = data.results[0];
-    return {
-      lat: loc.latitude, lon: loc.longitude,
-      name: loc.name,
-      admin1: loc.admin1 || '',
-    };
-  }
-
-  async function getRealtimeWeather(lat, lon) {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=auto`;
-    const resp = await fetch(url);
-    if (!resp.ok) throw new Error('天气请求失败');
-    const data = await resp.json();
-    if (!data.current) throw new Error('天气数据获取失败');
-    const c = data.current;
-    return {
-      temp: Math.round(c.temperature_2m),
-      code: c.weather_code,
-      humidity: c.relative_humidity_2m,
-      windSpeed: c.wind_speed_10m,
-    };
-  }
-
-  // ===== 创建 DOM =====
-  const widget = document.createElement('div');
-  widget.id = 'healing-sun-widget';
-  widget.innerHTML = `
-    <div class="hs-drag-bar" id="hs-drag-bar">
-      <div class="hs-drag-dots"></div>
-      <button class="hs-close-btn" id="hs-close-btn">✕</button>
-    </div>
-    <div class="hs-content" id="hs-content">
-      <div class="hs-loading" id="hs-loading">
-        <div class="hs-spinner"></div>
-        <p>正在检测你的位置...</p>
-      </div>
-      <div class="hs-manual hidden" id="hs-manual">
-        <div class="hs-manual-icon">📍</div>
-        <p>无法自动定位，请输入城市：</p>
-        <div class="hs-manual-form">
-          <input type="text" id="hs-city-input" placeholder="例如：北京">
-          <button id="hs-search-btn">查询</button>
-        </div>
-        <p class="hs-error-msg hidden" id="hs-error"></p>
-      </div>
-      <div class="hs-normal hidden" id="hs-normal">
-        <div class="hs-city-name" id="hs-city-name"></div>
-        <div class="hs-weather-main">
-          <span class="hs-weather-icon-emoji" id="hs-weather-icon"></span>
-          <div class="hs-temperature" id="hs-temperature"></div>
-        </div>
-        <div class="hs-weather-desc" id="hs-weather-desc"></div>
-        <div class="hs-weather-details">
-          <div class="hs-detail-item">
-            <span class="hs-detail-label">湿度</span>
-            <span class="hs-detail-value" id="hs-humidity"></span>
-          </div>
-          <div class="hs-detail-item">
-            <span class="hs-detail-label">风速</span>
-            <span class="hs-detail-value" id="hs-wind"></span>
-          </div>
-        </div>
-        <div class="hs-update-time" id="hs-update-time"></div>
-      </div>
-      <div class="hs-rain hidden" id="hs-rain">
-        <p class="hs-rain-message">外面在下雨...</p>
-        <div id="hs-sun-container">
-          <div class="hs-sun-rays">
-            <div class="hs-ray"></div>
-            <div class="hs-ray"></div>
-            <div class="hs-ray"></div>
-            <div class="hs-ray"></div>
-            <div class="hs-ray"></div>
-            <div class="hs-ray"></div>
-            <div class="hs-ray"></div>
-            <div class="hs-ray"></div>
-          </div>
-          <div class="hs-sun-body">
-            <div class="hs-sun-face">
-              <div class="hs-eyes">
-                <div class="hs-eye"></div>
-                <div class="hs-eye"></div>
-              </div>
-            </div>
-            <div class="hs-smile"></div>
-          </div>
-        </div>
-        <p class="hs-healing-message">但在这里，太阳为你而亮</p>
-        <div class="hs-rain-info">
-          <span id="hs-rain-city"></span>
-          <span class="hs-rain-divider">·</span>
-          <span id="hs-rain-temp"></span>
-        </div>
-      </div>
-    </div>
-    <div class="hs-actions" id="hs-actions" style="display:none;">
-      <button class="hs-action-btn" id="hs-refresh" title="刷新天气">🔄</button>
-      <button class="hs-action-btn" id="hs-relocate" title="重新定位">📍</button>
-    </div>
-  `;
-  document.body.appendChild(widget);
-
-  // ===== DOM 引用 =====
-  const $ = (id) => document.getElementById(id);
-  const el = {
-    loading: $('hs-loading'),
-    manual: $('hs-manual'),
-    normal: $('hs-normal'),
-    rain: $('hs-rain'),
-    actions: $('hs-actions'),
-    cityName: $('hs-city-name'),
-    weatherIcon: $('hs-weather-icon'),
-    temperature: $('hs-temperature'),
-    weatherDesc: $('hs-weather-desc'),
-    humidity: $('hs-humidity'),
-    wind: $('hs-wind'),
-    updateTime: $('hs-update-time'),
-    rainCity: $('hs-rain-city'),
-    rainTemp: $('hs-rain-temp'),
-    error: $('hs-error'),
-    cityInput: $('hs-city-input'),
-  };
-
-  function showView(name) {
-    el.loading.classList.add('hidden');
-    el.manual.classList.add('hidden');
-    el.normal.classList.add('hidden');
-    el.rain.classList.add('hidden');
-    if (name === 'loading') { el.loading.classList.remove('hidden'); el.actions.style.display = 'none'; }
-    else if (name === 'manual') { el.manual.classList.remove('hidden'); el.actions.style.display = 'none'; }
-    else if (name === 'normal') { el.normal.classList.remove('hidden'); el.actions.style.display = 'flex'; }
-    else if (name === 'rain') { el.rain.classList.remove('hidden'); el.actions.style.display = 'flex'; }
-  }
-
-  let lastCityInfo = null;
-
-  async function fetchAndRender(manualCity) {
-    try {
-      let cityInfo;
-      if (manualCity) {
-        cityInfo = await geocodeCity(manualCity);
       } else {
-        const detected = await getLocation();
-        if (!detected) { showView('manual'); return; }
-        cityInfo = await geocodeCity(detected);
+        if (typeof chrome !== 'undefined' && chrome.storage) {
+          chrome.storage.local.remove('hs_city');
+        }
       }
-      lastCityInfo = cityInfo;
-      const weather = await getRealtimeWeather(cityInfo.lat, cityInfo.lon);
-
-      const label = cityInfo.admin1 ? `${cityInfo.admin1} · ${cityInfo.name}` : cityInfo.name;
-      const now = new Date();
-      const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-
-      if (isRaining(weather.code)) {
-        el.rainCity.textContent = label;
-        el.rainTemp.textContent = `${weather.temp}°C · ${codeToText(weather.code)}`;
-        showView('rain');
-      } else {
-        el.cityName.textContent = label;
-        el.weatherIcon.textContent = codeToEmoji(weather.code);
-        el.temperature.textContent = weather.temp;
-        el.weatherDesc.textContent = codeToText(weather.code);
-        el.humidity.textContent = `${weather.humidity}%`;
-        el.wind.textContent = `${weather.windSpeed} km/h`;
-        el.updateTime.textContent = `更新于 ${timeStr}`;
-        showView('normal');
-      }
-    } catch (err) {
-      console.error('[治愈太阳]', err);
-      showView('manual');
-      el.error.textContent = err.name === 'AbortError' ? '请求超时' : (err.message || '网络连接失败');
-      el.error.classList.remove('hidden');
     }
-  }
+  });
 
-  // ===== 拖拽 =====
-  const dragBar = $('hs-drag-bar');
-  let isDragging = false;
-  let dragStartX, dragStartY, widgetStartX, widgetStartY;
+  // 点击太阳外部关闭弹窗
+  document.addEventListener('click', function (e) {
+    if (!el.contains(e.target)) {
+      locPopup.classList.remove('show');
+    }
+  });
 
-  dragBar.addEventListener('mousedown', (e) => {
-    if (e.target.id === 'hs-close-btn') return;
-    isDragging = true;
-    widget.classList.add('dragging');
-    dragStartX = e.clientX;
-    dragStartY = e.clientY;
-    const rect = widget.getBoundingClientRect();
-    widgetStartX = rect.left;
-    widgetStartY = rect.top;
-    widget.style.right = 'auto';
-    widget.style.left = widgetStartX + 'px';
-    widget.style.top = widgetStartY + 'px';
+  // 拖拽
+  var dragging = false, moved = false, sx, sy, ox, oy;
+  el.addEventListener('mousedown', function (e) {
+    if (e.target === locInput || e.target === locBtn) return;
+    dragging = true; moved = false;
+    sx = e.clientX; sy = e.clientY;
+    var r = el.getBoundingClientRect();
+    ox = r.left; oy = r.top;
+    el.style.left = ox + 'px';
+    el.style.top = oy + 'px';
     e.preventDefault();
   });
-
-  document.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    const dx = e.clientX - dragStartX;
-    const dy = e.clientY - dragStartY;
-    widget.style.left = (widgetStartX + dx) + 'px';
-    widget.style.top = (widgetStartY + dy) + 'px';
+  document.addEventListener('mousemove', function (e) {
+    if (!dragging) return;
+    var dx = e.clientX - sx, dy = e.clientY - sy;
+    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) moved = true;
+    el.style.left = (ox + dx) + 'px';
+    el.style.top = (oy + dy) + 'px';
   });
+  document.addEventListener('mouseup', function () { dragging = false; });
 
-  document.addEventListener('mouseup', () => {
-    if (isDragging) {
-      isDragging = false;
-      widget.classList.remove('dragging');
-    }
+  // 点击太阳本体收缩（拖拽不算）
+  el.addEventListener('click', function (e) {
+    if (moved) return;
+    if (e.target === locInput || e.target === locBtn || locPopup.contains(e.target)) return;
+    el.classList.add('hiding');
+    setTimeout(function () { el.style.display = 'none'; }, 400);
   });
-
-  // ===== 事件 =====
-  $('hs-close-btn').addEventListener('click', () => {
-    widget.style.display = 'none';
-  });
-
-  $('hs-refresh').addEventListener('click', () => {
-    showView('loading');
-    fetchAndRender(lastCityInfo?.name);
-  });
-
-  $('hs-relocate').addEventListener('click', () => {
-    showView('loading');
-    fetchAndRender();
-  });
-
-  $('hs-search-btn').addEventListener('click', () => {
-    const city = el.cityInput.value.trim();
-    if (!city) return;
-    el.error.classList.add('hidden');
-    showView('loading');
-    fetchAndRender(city);
-  });
-
-  el.cityInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') $('hs-search-btn').click();
-  });
-
-  // ===== 启动 =====
-  fetchAndRender();
 })();

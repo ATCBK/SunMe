@@ -1,8 +1,7 @@
-// 点击插件图标时，向当前页面注入/切换浮窗
 chrome.action.onClicked.addListener(async (tab) => {
   if (!tab.id) return;
 
-  // 先检查浮窗是否已经注入
+  // 检查是否已存在
   try {
     const [result] = await chrome.scripting.executeScript({
       target: { tabId: tab.id },
@@ -10,34 +9,32 @@ chrome.action.onClicked.addListener(async (tab) => {
     });
 
     if (result?.result) {
-      // 已存在，切换显示/隐藏
+      // 切换显示/隐藏
       await chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func: () => {
-          const widget = document.getElementById('healing-sun-widget');
-          if (widget) {
-            widget.style.display = widget.style.display === 'none' ? 'flex' : 'none';
+          const w = document.getElementById('healing-sun-widget');
+          if (w.style.display === 'none') {
+            w.classList.remove('hiding');
+            w.style.display = 'block';
+          } else {
+            w.classList.add('hiding');
+            setTimeout(() => { w.style.display = 'none'; }, 400);
           }
         },
       });
       return;
     }
-  } catch (e) {
-    return;
-  }
+  } catch { return; }
 
-  // 注入浮窗
+  // 注入 CSS 再注入 JS
   try {
-    await chrome.scripting.insertCSS({
-      target: { tabId: tab.id },
-      files: ['widget/widget.css'],
-    });
-    await chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      files: ['widget/widget.js'],
-    });
+    const cssUrl = chrome.runtime.getURL('widget/widget.css');
+    const resp = await fetch(cssUrl);
+    const css = await resp.text();
+    await chrome.scripting.insertCSS({ target: { tabId: tab.id }, css });
+    await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['widget/widget.js'] });
   } catch (e) {
-    // 某些页面无法注入（如 chrome:// 页面）
-    console.warn('无法在此页面注入浮窗:', e.message);
+    console.warn('注入失败:', e.message);
   }
 });
