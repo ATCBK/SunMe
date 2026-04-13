@@ -3,7 +3,7 @@
   "name": "治愈太阳",
   "version": "3.0.0",
   "description": "一个治愈的太阳 ☀️",
-  "permissions": ["activeTab", "scripting"],
+  "permissions": ["activeTab", "scripting", "storage"],
   "background": {
     "service_worker": "background.js"
   },

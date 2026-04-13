@@ -41,6 +41,7 @@
         '</div>' +
         '<div class="hs-smile"></div>' +
       '</div>' +
+      '<div class="hs-weather" id="hs-weather"></div>' +
       '<button class="hs-loc-btn" title="设置地区">📍</button>' +
       '<div class="hs-loc-popup" id="hs-loc-popup">' +
         '<input type="text" id="hs-loc-input" placeholder="输入城市名 如 北京">' +
@@ -52,6 +53,80 @@
   var locBtn = el.querySelector('.hs-loc-btn');
   var locPopup = document.getElementById('hs-loc-popup');
   var locInput = document.getElementById('hs-loc-input');
+  var weatherEl = document.getElementById('hs-weather');
+
+  // 向 background 发送消息的封装
+  function sendToBg(type, data) {
+    return new Promise(function (resolve) {
+      var msg = Object.assign({ type: type }, data || {});
+      chrome.runtime.sendMessage(msg, resolve);
+    });
+  }
+
+  // 加载已保存的城市并查询天气
+  function loadAndFetch(city) {
+    weatherEl.textContent = '加载中...';
+    if (city) {
+      // 有城市名，直接查天气
+      sendToBg('fetchWeather', { city: city }).then(function (res) {
+        if (res && !res.error) {
+          showWeather(res);
+          chrome.storage.local.set({ hs_city: city });
+        } else {
+          weatherEl.textContent = (res && res.error) || '查询失败';
+        }
+      });
+    } else {
+      // 无城市名，先自动定位
+      sendToBg('fetchLocation').then(function (loc) {
+        if (loc && loc.city) {
+          var autoCity = loc.city;
+          chrome.storage.local.set({ hs_city: autoCity });
+          locInput.value = autoCity;
+          return sendToBg('fetchWeather', { city: autoCity });
+        } else {
+          weatherEl.textContent = '请手动输入城市';
+          return null;
+        }
+      }).then(function (res) {
+        if (res && !res.error) {
+          showWeather(res);
+        } else if (res && res.error) {
+          weatherEl.textContent = res.error;
+        }
+      });
+    }
+  }
+
+  // 显示天气信息
+  function showWeather(data) {
+    var raining = data.isRaining;
+    var emoji = raining ? '🌧️' : weatherEmoji(data.weatherCode);
+    weatherEl.innerHTML =
+      '<div class="hs-w-city">' + (data.city || '') + '</div>' +
+      '<div class="hs-w-temp">' + emoji + ' ' + data.temp + '°C</div>' +
+      '<div class="hs-w-desc">' + data.description + '</div>';
+    if (raining) {
+      weatherEl.innerHTML += '<div class="hs-w-msg">外面在下雨...但这里，太阳为你而亮 ☀️</div>';
+      el.classList.add('hs-rain-mode');
+    }
+  }
+
+  function weatherEmoji(code) {
+    if (code === 0) return '☀️';
+    if (code <= 2) return '⛅';
+    if (code === 3) return '☁️';
+    if (code >= 71 && code <= 77) return '❄️';
+    if (code >= 95) return '⛈️';
+    return '🌤️';
+  }
+
+  // 首次加载：读取已保存的城市
+  chrome.storage.local.get('hs_city', function (data) {
+    var savedCity = data.hs_city || '';
+    locInput.value = savedCity;
+    loadAndFetch(savedCity);
+  });
 
   // 点地区按钮 → 弹出输入框
   locBtn.addEventListener('click', function (e) {
@@ -68,14 +143,10 @@
       var city = locInput.value.trim();
       locPopup.classList.remove('show');
       if (city) {
-        // 保存城市到 chrome.storage，下次插件加载时读取
-        if (typeof chrome !== 'undefined' && chrome.storage) {
-          chrome.storage.local.set({ hs_city: city });
-        }
+        loadAndFetch(city);
       } else {
-        if (typeof chrome !== 'undefined' && chrome.storage) {
-          chrome.storage.local.remove('hs_city');
-        }
+        chrome.storage.local.remove('hs_city');
+        loadAndFetch('');
       }
     }
   });
